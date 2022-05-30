@@ -1,0 +1,443 @@
+<!-- Start Page Header -->
+<div class="page-header-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 mx-auto">
+                <div class="page-header-container">
+                    <div class="page-header-content">
+                        <h1 class="heading-one">Lunch Detail</h1>
+                        <div class="page-nav">
+                            <ul>
+                                <li><a routerLink="/home">Home > </a></li>
+                                <li> Lunch Details</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Page Header -->
+<div class="meal-detail">
+    <!-- Start Product Details -->
+    <div class="product-details section-ptb">
+        <div class="container">
+            <div class="row ">
+                <!-- Start Product Thumb -->
+                <div class="col-lg-5 col-sm-5 mb-4 mb-lg-0">
+                    <div class="product-thumbs">
+
+                        <owl-carousel-o *ngIf="dynamicSlides.length>0" [options]="customOptions">
+                            <ng-container *ngFor="let slide of dynamicSlides">
+                                <ng-template carouselSlide [id]="slide.id">
+                                    <img [src]="slide.image">
+                                </ng-template>
+                            </ng-container>
+                        </owl-carousel-o>
+
+                        <owl-carousel-o *ngIf="dynamicSlides.length==0" [options]="customOptions">
+                            <ng-container>
+                                <ng-template carouselSlide [id]="'0'">
+                                    <img [src]="'assets/img/meal6.png'">
+                                </ng-template>
+                            </ng-container>
+                        </owl-carousel-o>
+
+
+                    </div>
+                </div>
+                <!-- Start Product Thumb -->
+
+                <!-- Start Product Content -->
+                <div class="col-lg-7 col-sm-7">
+                    <div class="product-content">
+                        <small *ngIf="mealData.category">{{mealData.category.title}}</small>
+                        <h2 class="heading-2">{{mealData.heading}}</h2>
+                        <div class="product-rating">
+                            <p><i class="far fa-star"></i> <span>{{mealData.rating}}</span> ({{mealData.reviews}}
+                                Customer Review)</p>
+                        </div>
+                        <div class="product-price">
+                            <p>${{mealData.price}}</p>
+                        </div>
+                        <div class="product-text" [innerHTML]="mealData.short_description">
+
+                        </div>
+
+                        <!-- <form (ngSubmit)="addtoCart()"> -->
+
+
+                        <div class="well show-fdae">
+                            <div class="head-maela">
+                                <h3>Please choose Meal options</h3>
+                            </div>
+
+                            <!-- loop -->
+                            <div class="selected-date"
+                                *ngFor="let mealOption of mealOptions; let indexOfelement=index;">
+                                <div class="date-rows">
+                                    <mat-form-field>
+                                        <input [matDatepickerFilter]="myHolidayFilter" matInput type="text"
+                                            [max]="maxDate" autocomplete="off" [min]="date"
+                                            [(ngModel)]="mealOption.date" [matDatepicker]="picker"
+                                            placeholder="Choose a date">
+                                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                        <mat-datepicker #picker></mat-datepicker>
+                                    </mat-form-field>
+                                </div>
+                                <div class="meal-type my-select" style="width: 50%;">
+                                    <a href="javascript:void(0)" *ngIf="preferences.length > 0"
+                                        (click)="OpenModal(indexOfelement)">Meal preference</a>
+                                    <!--<ng-multiselect-dropdown [settings]="dropdownSettings" [(ngModel)]="mealOption.preference" [data]="preferences">
+                                    </ng-multiselect-dropdown> -->
+
+                                    <div class="modal fade" id="preference-popup{{indexOfelement}}" tabindex="-1"
+                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Select your meal
+                                                        preference</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+
+
+                                                    <div class="form-group"
+                                                        *ngFor='let c of mealOption.preference; let i = index'>
+                                                        <div >
+                                                            <label>Preference {{i+1}}</label>
+                                                            <select class="form-control" [(ngModel)]="c.id">
+                                                                <option [value]="0" selected>Select Preference
+                                                                </option>
+                                                                <option *ngFor="let preference of preferences"
+                                                                    [value]="preference.id">
+                                                                    {{preference.title}}</option>
+                                                            </select>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="product-action d-flex align-items-center ">
+                                    <input type="number" value="1" min="1" [(ngModel)]="mealOption.qunatity">
+                                </div>
+                                <div class="meal-delete">
+                                    <a href="javascript:;" (click)="addMore()" *ngIf="indexOfelement==0"
+                                        class="btn btn-warning">Add</a>
+                                    <a href="javascript:;" (click)="remoteItem(indexOfelement)"
+                                        *ngIf="indexOfelement!=0" class="btn btn-danger"><i
+                                            class="far fa-trash-alt"></i></a>
+                                </div>
+                            </div>
+                            <!-- loop -->
+
+                            <div class="alert alert-danger" *ngIf="showErrorForDate">Please select date.</div>
+
+                        </div>
+
+                        <div class="specail-note">
+                            <div class="head-maela">
+                                <h3>Any special note</h3>
+                            </div>
+                            <textarea class="form-control" rows="3" [(ngModel)]="remark"></textarea>
+                        </div>
+                        <div class="product-action d-flex align-items-center mt-4">
+
+                            <a (click)="addtoCart()" class="default-btn"><i class="fas fa-plus"></i> Book Order</a>
+
+                        </div>
+                        <!-- </form> -->
+
+                        <div class="same-dar-orxcer mt-4">
+                            <a href="javascript:;" (click)="AlertMessage('Currently we support same day orders only over phone and if the orders are placed before 11:00 AM');" class="default-btn">Contact us for same day order</a>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- End Product Content -->
+            </div>
+        </div>
+        <!-- Start Product Reviews -->
+        <div class="products-reviews mt-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="reviews-info">
+
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info"
+                                        role="tab" aria-controls="info" aria-selected="true">
+                                        Additional Information
+                                    </a>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews"
+                                        type="button" role="tab" aria-controls="reviews" aria-selected="false">
+                                        reviews({{mealData.reviews}})
+                                    </a>
+                                </li>
+
+                            </ul>
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade show active" id="info" role="tabpanel">
+                                    <h6 class="heading-6">Additional Information</h6>
+                                    <div class="general-nav-3 mt-4" [innerHTML]="mealData.detail_description">
+
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade " id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                                    <h6 class="heading-6">Reviews</h6>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <div class="rating-block">
+                                                <h4>Average user rating</h4>
+                                                <h2 class="bold padding-bottom-7">{{mealData.rating}} <small>/ 5</small>
+                                                </h2>
+                                                <button type="button"
+                                                    class="btn {{mealData.rating>=1 ? 'btn-warning' : 'btn-default btn-grey' }} btn-sm"
+                                                    aria-label="Left Align">
+                                                    <i class="fas fa-solid fa-star"></i>
+                                                </button>
+                                                <button type="button"
+                                                    class="btn  {{mealData.rating>=2 ? 'btn-warning' : 'btn-default btn-grey' }}  btn-sm"
+                                                    aria-label="Left Align">
+                                                    <i class="fas fa-solid fa-star"></i>
+                                                </button>
+                                                <button type="button"
+                                                    class="btn  {{mealData.rating>=3 ? 'btn-warning' : 'btn-default btn-grey' }}  btn-sm"
+                                                    aria-label="Left Align">
+                                                    <i class="fas fa-solid fa-star"></i>
+                                                </button>
+                                                <button type="button"
+                                                    class="btn  {{mealData.rating>=4 ? 'btn-warning' : 'btn-default btn-grey' }}  btn-sm"
+                                                    aria-label="Left Align">
+                                                    <i class="fas fa-solid fa-star"></i>
+                                                </button>
+                                                <button type="button"
+                                                    class="btn  {{mealData.rating>=5 ? 'btn-warning' : 'btn-default btn-grey' }}  btn-sm"
+                                                    aria-label="Left Align">
+                                                    <i class="fas fa-solid fa-star"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-7">
+                                            <hr />
+                                            <div class="review-block" *ngIf="reviews.length > 0">
+                                                <div class="row">
+                                                    <div class="col-sm-3">
+                                                        <img src="http://dummyimage.com/60x60/666/ffffff&text=No+Image"
+                                                            class="img-rounded">
+                                                        <div class="review-block-name"><a href="#">nktailor</a></div>
+                                                        <div class="review-block-date">January 29, 2016<br />1 day ago
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-9">
+                                                        <div class="review-block-rate">
+                                                            <button type="button" class="btn btn-warning btn-sm"
+                                                                aria-label="Left Align">
+                                                                <i class="fas fa-solid fa-star"></i>
+                                                            </button>
+                                                            <button type="button" class="btn btn-warning btn-sm"
+                                                                aria-label="Left Align">
+                                                                <i class="fas fa-solid fa-star"></i>
+                                                            </button>
+                                                            <button type="button" class="btn btn-warning btn-sm"
+                                                                aria-label="Left Align">
+                                                                <i class="fas fa-solid fa-star"></i>
+                                                            </button>
+                                                            <button type="button"
+                                                                class="btn btn-default btn-grey btn-sm"
+                                                                aria-label="Left Align">
+                                                                <i class="fas fa-solid fa-star"></i>
+                                                            </button>
+                                                            <button type="button"
+                                                                class="btn btn-default btn-grey btn-sm"
+                                                                aria-label="Left Align">
+                                                                <i class="fas fa-solid fa-star"></i>
+                                                            </button>
+                                                        </div>
+                                                        <div class="review-block-title">this was nice in buy</div>
+                                                        <div class="review-block-description">this was nice in buy. this
+                                                            was nice in buy. this was nice in buy. this was nice in buy
+                                                            this was nice in buy this was nice in buy this was nice in
+                                                            buy this was nice in buy</div>
+                                                    </div>
+                                                </div>
+                                                <hr />
+                                                <div class="row">
+                                                    <div class="col-sm-3">
+                                                        <img src="http://dummyimage.com/60x60/666/ffffff&text=No+Image"
+                                                            class="img-rounded">
+                                                        <div class="review-block-name"><a href="#">nktailor</a></div>
+                                                        <div class="review-block-date">January 29, 2016<br />1 day ago
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-9">
+                                                        <div class="review-block-rate">
+                                                            <button type="button" class="btn btn-warning btn-sm"
+                                                                aria-label="Left Align">
+                                                                <i class="fas fa-solid fa-star"></i>
+                                                            </button>
+                                                            <button type="button" class="btn btn-warning btn-sm"
+                                                                aria-label="Left Align">
+                                                                <i class="fas fa-solid fa-star"></i>
+                                                            </button>
+                                                            <button type="button" class="btn btn-warning btn-sm"
+                                                                aria-label="Left Align">
+                                                                <i class="fas fa-solid fa-star"></i>
+                                                            </button>
+                                                            <button type="button"
+                                                                class="btn btn-default btn-grey btn-sm"
+                                                                aria-label="Left Align">
+                                                                <i class="fas fa-solid fa-star"></i>
+                                                            </button>
+                                                            <button type="button"
+                                                                class="btn btn-default btn-grey btn-sm"
+                                                                aria-label="Left Align">
+                                                                <i class="fas fa-solid fa-star"></i>
+                                                            </button>
+                                                        </div>
+                                                        <div class="review-block-title">this was nice in buy</div>
+                                                        <div class="review-block-description">this was nice in buy. this
+                                                            was nice in buy. this was nice in buy. this was nice in buy
+                                                            this was nice in buy this was nice in buy this was nice in
+                                                            buy this was nice in buy</div>
+                                                    </div>
+                                                </div>
+                                                <hr />
+                                                <div class="row">
+                                                    <div class="col-sm-3">
+                                                        <img src="http://dummyimage.com/60x60/666/ffffff&text=No+Image"
+                                                            class="img-rounded">
+                                                        <div class="review-block-name"><a href="#">nktailor</a></div>
+                                                        <div class="review-block-date">January 29, 2016<br />1 day ago
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-9">
+                                                        <div class="review-block-rate">
+                                                            <button type="button" class="btn btn-warning btn-sm"
+                                                                aria-label="Left Align">
+                                                                <i class="fas fa-solid fa-star"></i>
+                                                            </button>
+                                                            <button type="button" class="btn btn-warning btn-sm"
+                                                                aria-label="Left Align">
+                                                                <i class="fas fa-solid fa-star"></i>
+                                                            </button>
+                                                            <button type="button" class="btn btn-warning btn-sm"
+                                                                aria-label="Left Align">
+                                                                <i class="fas fa-solid fa-star"></i>
+                                                            </button>
+                                                            <button type="button"
+                                                                class="btn btn-default btn-grey btn-sm"
+                                                                aria-label="Left Align">
+                                                                <i class="fas fa-solid fa-star"></i>
+                                                            </button>
+                                                            <button type="button"
+                                                                class="btn btn-default btn-grey btn-sm"
+                                                                aria-label="Left Align">
+                                                                <i class="fas fa-solid fa-star"></i>
+                                                            </button>
+                                                        </div>
+                                                        <div class="review-block-title">this was nice in buy</div>
+                                                        <div class="review-block-description">this was nice in buy. this
+                                                            was nice in buy. this was nice in buy. this was nice in buy
+                                                            this was nice in buy this was nice in buy this was nice in
+                                                            buy this was nice in buy</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Product Reviews -->
+    </div>
+    <!-- End Product Details -->
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="contact-popup" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Contact us for Same Day Order</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form [formGroup]="form" (ngSubmit)="deliveryFormSubmit()">
+                <div class="modal-body">
+                    <div *ngIf="contactFormMsg" class="alert alert-success">{{contactFormMsg}}</div>
+                    <div class="form-group">
+                        <label class=" control-label">Name</label>
+                        <input type="text" formControlName="name" placeholder="Name" class="form-control">
+                        <div *ngIf="form.controls['name'].touched && form.controls['name'].invalid" class="text-danger">
+                            <div *ngIf="form.controls['name'].errors && form.controls['name'].errors['required']">Name
+                                is required</div>
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <label class=" control-label">Email address</label>
+                        <input type="email" formControlName="email" placeholder="Email address" class="form-control">
+                        <div *ngIf="form.controls['email'].touched && form.controls['email'].invalid"
+                            class="text-danger">
+                            <div *ngIf="form.controls['email'].errors && form.controls['email'].errors['required']">
+                                email is required</div>
+                            <div *ngIf="form.controls['email'].errors && form.controls['email'].errors['email']">Valid
+                                email is required</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class=" control-label">Delivery Address</label>
+                        <input type="text" formControlName="delivery_address" placeholder="Delivery Address"
+                            class="form-control">
+                        <div *ngIf="form.controls['delivery_address'].touched && form.controls['delivery_address'].invalid"
+                            class="text-danger">
+                            <div
+                                *ngIf="form.controls['delivery_address'].errors && form.controls['delivery_address'].errors['required']">
+                                Address is required</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class=" control-label">Phone number</label>
+                        <input type="number" formControlName="phone" placeholder="Phone number" class="form-control">
+                        <div *ngIf="form.controls['phone'].touched && form.controls['phone'].invalid"
+                            class="text-danger">
+                            <div *ngIf="form.controls['phone'].errors && form.controls['phone'].errors['required']">
+                                Phone is required</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" [disabled]="!form.valid || contactFormLoader" class="btn btn-warning">Submit
+                        <i *ngIf="contactFormLoader" class="fa fa-spin fa-spinner"></i></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Contact Popup-->
