@@ -29,6 +29,11 @@ export class UserService {
     return this.httpClient.post<any>(this.apiURL+'/signup',convertJSONToFormData(data))
   }
 
+  
+  socialLogin(data:any):Observable<any>{
+    return this.httpClient.post<any>(this.apiURL+'/socialLogin',convertJSONToFormData(data))
+  }
+
   EditProfile(data:any):Observable<any>{
     return this.httpClient.post<any>(this.apiURL+'/EditProfile',convertJSONToFormData(data))
   }
@@ -47,8 +52,14 @@ export class UserService {
     return this.httpClient.post<any>(this.apiURL+'/PlaceOrder',data)
   }
 
-  MyOrders(user_id:any):Observable<any> {
-    let params = new HttpParams().set("user_id",user_id);
+  MyOrders(data:any):Observable<any> {
+    //let params = new HttpParams().set("user_id",user_id);
+
+    let params = new HttpParams()
+
+    for (const param in data) {
+      params = params.set(param,data[param])
+    }
 
     return this.httpClient.get<any>(this.apiURL + '/MyOrders/',{params})
       .pipe(
@@ -56,8 +67,66 @@ export class UserService {
       )
   }
 
-  MyTransactions(user_id:any):Observable<any> {
-    let params = new HttpParams().set("user_id",user_id);
+  GetCountry(data:any):Observable<any> {
+    //let params = new HttpParams().set("user_id",user_id);
+
+    let params = new HttpParams()
+
+    for (const param in data) {
+      params = params.set(param,data[param])
+    }
+
+    return this.httpClient.get<any>(this.apiURL + '/get_country/',{params})
+      .pipe(
+        catchError(this.errorHandler)
+      )
+  }
+
+  MyAddress(data:any):Observable<any> {
+    //let params = new HttpParams().set("user_id",user_id);
+
+    let params = new HttpParams()
+
+    for (const param in data) {
+      params = params.set(param,data[param])
+    }
+
+    return this.httpClient.get<any>(this.apiURL + '/my_address/',{params})
+      .pipe(
+        catchError(this.errorHandler)
+      )
+  }
+  AddAddress(data:any):Observable<any> {
+    //let params = new HttpParams().set("user_id",user_id);
+
+    return this.httpClient.post<any>(this.apiURL + '/add_address/',convertJSONToFormData(data))
+      .pipe(
+        catchError(this.errorHandler)
+      )
+  }
+  EditAddress(data:any):Observable<any> {
+    //let params = new HttpParams().set("user_id",user_id);
+
+    return this.httpClient.post<any>(this.apiURL + '/edit_address/',convertJSONToFormData(data))
+      .pipe(
+        catchError(this.errorHandler)
+      )
+  }
+  DeleteAddress(data:any):Observable<any> {
+    //let params = new HttpParams().set("user_id",user_id);
+
+    return this.httpClient.post<any>(this.apiURL + '/delete_address/',convertJSONToFormData(data))
+      .pipe(
+        catchError(this.errorHandler)
+      )
+  }
+
+  MyTransactions(data:any):Observable<any> {
+    let params = new HttpParams()
+
+    for (const param in data) {
+      params = params.set(param,data[param])
+    }
 
     return this.httpClient.get<any>(this.apiURL + '/MyTransactions/',{params})
       .pipe(
@@ -65,15 +134,7 @@ export class UserService {
       )
   }
 
-  
-  MyAddress(user_id:any):Observable<any> {
-    let params = new HttpParams().set("user_id",user_id);
 
-    return this.httpClient.get<any>(this.apiURL + '/MyAddress/',{params})
-      .pipe(
-        catchError(this.errorHandler)
-      )
-  }
 
   ForgetPassword(data:any):Observable<any>{
     return this.httpClient.post<any>(this.apiURL+'/ForgetPassword',convertJSONToFormData(data))
